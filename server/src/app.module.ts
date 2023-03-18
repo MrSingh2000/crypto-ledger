@@ -5,10 +5,13 @@ import { CatsModule } from './test/cats/cats.module';
 import { CryptoModule } from './crypto/crypto.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [MongooseModule.forRoot('mongodb://127.0.0.1:27017', {dbName: 'cryptoledger'}), CatsModule, CryptoModule, AuthModule ],
+  imports: [ConfigModule.forRoot({
+    isGlobal: true,
+  }), MongooseModule.forRoot(process.env.MONGO_URI, { dbName: 'cryptoledger' }), CatsModule, CryptoModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
