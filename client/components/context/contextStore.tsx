@@ -3,6 +3,7 @@ import defaultContext from "./context";
 import axios from "axios";
 import Constants from 'expo-constants';
 import { buyCoin, data, sellCoin } from "../interface/data.interface";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // create the note state
 const ContextStore = ({ children }: { children: ReactNode }) => {
@@ -22,7 +23,7 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
       total += item.profit.reduce((a, b) => a + b, 0);
     });
 
-    setProfileProfit(total);
+    setProfileProfit(parseFloat(total.toFixed(2)));
   }
 
   const getData = () => {
@@ -83,8 +84,11 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
 
   const handleSell = (id: string) => {
     setLoading(true);
-    if (sell.sell === 0 || sell.quantity === 0)
+    if (sell.sell < 0 || sell.quantity < 0) {
+      setLoading(false);
       return;
+    }
+    console.log(sell);
     axios({
       url: `${Constants.expoConfig?.extra?.apiUrl}/crypto/sell/${id}`,
       method: 'post',
@@ -112,10 +116,34 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
     }).then((res) => {
       setLoading(false);
       setToken(res.data.access_token);
+      storeLocal(res.data.access_token);
     }).catch((err) => {
       setLoading(false);
       console.log("error: ", err);
     })
+  }
+
+  const storeLocal = async (value: string) => {
+    try {
+      await AsyncStorage.setItem('@token', value);
+    } catch (e) {
+      // saving error
+      console.log("Error in local storage: ", e);
+    }
+  }
+
+
+  const readLocal = async () => {
+    try {
+      const value = await AsyncStorage.getItem('@token');
+      if (value !== null) {
+        // value previously stored
+        setToken(value);
+      }
+    } catch (e) {
+      // error reading value
+      console.log("Error in local storage: ", e);
+    }
   }
 
   // this is the boiler for creating a context, always same whenever use context
@@ -138,7 +166,9 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
       profileProfit,
       handleLogin,
       loading,
-      setLoading
+      setLoading,
+      storeLocal,
+      readLocal
     }}>
       {children}
     </defaultContext.Provider>

@@ -3,13 +3,16 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   slug: 'my-app',
-  name: 'My App',
+  name: 'Crypto Ledger',
   extra: {
-    apiUrl: 'https://cryptoledger.onrender.com'
+    // apiUrl: 'https://cryptoledger.onrender.com',
+    apiUrl: process.env.API_URL || 'http://192.168.43.154:3000',
+    eas: {
+      projectId: "787b3cb3-c972-455a-bc30-87b6a740c08b"
+    }
   }
 });
 
-// apiUrl: process.env.API_URL || 'http://192.168.43.154:3000'
 
 // module.exports = {
 //   name: 'MyApp',

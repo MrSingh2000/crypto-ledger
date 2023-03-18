@@ -8,10 +8,12 @@ import ModalCustom from './ModalCustom';
 import defaultContext from './context/context';
 import { FontAwesome5 } from '@expo/vector-icons';
 import Preloader from './Preloader';
+import { Entypo } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function Home() {
-    const { token,
+    const { setToken,
         data,
         getData,
         buy,
@@ -24,7 +26,7 @@ export default function Home() {
         sell,
         setSell,
         profileProfit,
-        loading, 
+        loading,
         setLoading
     } = useContext(defaultContext);
 
@@ -38,7 +40,7 @@ export default function Home() {
     }
 
     const handleSellChange = (key: string, e: string) => {
-        setSell(oldstate => ({ ...oldstate, [key]: parseInt(e) }));
+        setSell(oldstate => ({ ...oldstate, [key]: parseFloat(e) }));
     }
 
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
@@ -110,13 +112,13 @@ export default function Home() {
                         </Text>
                         <View style={{ flex: 3 }}>
                             {/* Flatlist */}
-                            <FlatList stickyHeaderIndices={[0]} ListHeaderComponent={FlatList_Header} style={[styles.list]}
+                            <FlatList showsVerticalScrollIndicator={false} stickyHeaderIndices={[0]} ListHeaderComponent={FlatList_Header} style={[styles.list]}
                                 data={item.sell}
                                 renderItem={({ index, item }) => {
                                     let d = new Date(item.sdate);
                                     return (
                                         <View key={index} style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                                            <Text style={{ fontSize: 10 }}>{item.quantity}</Text>
+                                            <Text style={{ fontSize: 10 }}>{item.quantity.toFixed(2)}</Text>
                                             <Text style={{ fontSize: 10 }}>{item.price}</Text>
                                             <Text style={{ fontSize: 10 }}>{d.toLocaleDateString()}</Text>
                                         </View>
@@ -132,7 +134,7 @@ export default function Home() {
                             Profit:
                         </Text>
                         <Text style={{ marginLeft: 5, color: 'white' }}>
-                            {profit}
+                            {profit.toFixed(2)}
                         </Text>
                     </Box>
                     <Box style={{ flexDirection: 'row' }}>
@@ -162,17 +164,34 @@ export default function Home() {
         getData();
     }, [])
 
+    const logout = async (): Promise<void> => {
+        try {
+            await AsyncStorage.removeItem('@token');
+            setToken("");
+        } catch (e) {
+            console.log("Error in local storage clearing: ", e);
+        }
+    }
+
 
     return loading ? (
         <Preloader />
     ) : (
         <View style={styles.container}>
-            <ScrollView style={{ width: '100%' }} stickyHeaderIndices={[0]}>
+            <ScrollView showsVerticalScrollIndicator={false} style={{ width: '100%' }} stickyHeaderIndices={[0]}>
                 {/* Heading */}
                 <Box style={styles.heading}>
-                    <Text style={{ fontWeight: 'bold', fontSize: 25, textAlign: 'center' }}>
-                        Transactions
-                    </Text>
+                    <Box style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                        <Text style={{ fontWeight: 'bold', fontSize: 25, textAlign: 'center' }}>
+                            Transactions
+                        </Text>
+                        <TouchableHighlight
+                            style={{ backgroundColor: 'white', shadowColor: 'black', elevation: 5, borderRadius: 10, padding: 10, marginTop: 5, marginRight: 5 }}
+                            underlayColor={'white'}
+                            onPress={logout}>
+                            <Entypo name="log-out" size={24} color="black" />
+                        </TouchableHighlight>
+                    </Box>
                     <Text style={{ width: 120, margin: 5, color: 'white', borderRadius: 20, backgroundColor: `${profileProfit >= 0 ? '#0EAD69' : '#FF0000'}`, fontWeight: 'bold', fontSize: 20, textAlign: 'center' }}>
                         Profit: {profileProfit}
                     </Text>
@@ -267,7 +286,7 @@ export default function Home() {
                             </Box>
                             <TouchableHighlight
                                 style={[styles.btnNormal, { width: 150, marginHorizontal: '30%' }]}
-                                underlayColor={'white'}
+                                underlayColor={'#FF7070'}
                                 onPress={() => {
                                     handleSell(Id);
                                     onModalClose();
@@ -320,7 +339,8 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 10,
         backgroundColor: 'white',
-        borderRadius: 10,
+        borderBottomLeftRadius: 10,
+        borderBottomRightRadius: 10,
         shadowColor: 'black',
         shadowOpacity: 0.9,
         elevation: 50,

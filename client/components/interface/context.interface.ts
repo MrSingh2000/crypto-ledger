@@ -21,5 +21,7 @@ export interface ContextData {
         password: string
     }) => void,
     loading: boolean,
-    setLoading: React.Dispatch<React.SetStateAction<boolean>>
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>,
+    storeLocal: (val: string) => Promise<void>,
+    readLocal: () => Promise<void>
 }

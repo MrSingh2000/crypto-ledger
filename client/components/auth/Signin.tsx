@@ -18,7 +18,7 @@ export default function Singin({ navigation, route }: {
   navigation: any
   route: any
 }) {
-  const { setLoading, loading } = useContext(defaultContext);
+  const { setLoading, loading, readLocal } = useContext(defaultContext);
 
   const { handleLogin } = useContext(defaultContext);
 
@@ -31,6 +31,11 @@ export default function Singin({ navigation, route }: {
     // console.log(data);
     setData(oldState => ({ ...oldState, [key]: e }));
   }
+
+  useEffect(() => {
+    readLocal();
+  }, [])
+
 
   return loading ? (
     <Preloader />

@@ -70,7 +70,7 @@ export class CryptoService {
     }
 
     async getData(): Promise<any> {
-        let data = await this.cryptoModel.find();
+        let data = await this.cryptoModel.find().sort({bdate: -1});
         return data;
     }
 

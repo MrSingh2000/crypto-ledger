@@ -21,7 +21,8 @@ const Stack = createNativeStackNavigator();
 
 
 export default function Main() {
-    const { token, loading } = useContext(defaultContext);
+    const { token} = useContext(defaultContext);
+    
     return(
         <>
             <NativeBaseProvider>
@@ -36,7 +37,7 @@ export default function Main() {
                                 <Stack.Screen name="Signup" component={Signup} />
                             </Stack.Navigator>
                         ) : (
-                            <Tab.Navigator labeled={false} style={{ marginTop: Constants.statusBarHeight }}>
+                            <Tab.Navigator labeled={false}>
                                 <Tab.Screen options={{
                                     tabBarIcon: () => (
                                         <AntDesign name="home" size={26} color="black" />
