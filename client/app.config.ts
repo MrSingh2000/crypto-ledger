@@ -1,34 +1,15 @@
-interface ExpoConfig {
-  name: string,
-  version: string,
-  extra: {
-    apiUrl: string,
-    eas: {
-      projectId: string
-    },
-    android: {
-      package: string,
-      version: string
-    }
-  }
-}
+import { ExpoConfig, ConfigContext } from 'expo/config';
 
-const config: ExpoConfig = {
-  name: 'MyApp',
-  version: '1.0.0',
+export default ({ config }: ConfigContext): ExpoConfig => ({
+  ...config,
+  slug: 'my-app',
+  name: 'My App',
   extra: {
-    apiUrl: process.env.API_URL || 'http://192.168.43.154:3000',
-    eas: {
-      projectId: "bf85755d-4e0f-43c5-a3d0-af4a658e2dab"
-    },
-    android: {
-      package: "com.singh.cryptoledger",
-      version: '1'
-    }
+    apiUrl: 'https://cryptoledger.onrender.com'
   }
-};
+});
 
-export default config;
+// apiUrl: process.env.API_URL || 'http://192.168.43.154:3000'
 
 // module.exports = {
 //   name: 'MyApp',

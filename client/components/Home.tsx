@@ -7,6 +7,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ModalCustom from './ModalCustom';
 import defaultContext from './context/context';
 import { FontAwesome5 } from '@expo/vector-icons';
+import Preloader from './Preloader';
 
 
 export default function Home() {
@@ -22,7 +23,9 @@ export default function Home() {
         handleSell,
         sell,
         setSell,
-        profileProfit
+        profileProfit,
+        loading, 
+        setLoading
     } = useContext(defaultContext);
 
     const handleChange = (key: string, e: string | number) => {
@@ -160,7 +163,9 @@ export default function Home() {
     }, [])
 
 
-    return (
+    return loading ? (
+        <Preloader />
+    ) : (
         <View style={styles.container}>
             <ScrollView style={{ width: '100%' }} stickyHeaderIndices={[0]}>
                 {/* Heading */}

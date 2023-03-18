@@ -12,6 +12,7 @@ import defaultContext from './context/context';
 import ContextStore from './context/contextStore';
 import Singin from './auth/Signin';
 import Signup from './auth/Signup';
+import Preloader from './Preloader';
 
 
 const Tab = createMaterialBottomTabNavigator();
@@ -20,36 +21,37 @@ const Stack = createNativeStackNavigator();
 
 
 export default function Main() {
-    const { token } = useContext(defaultContext);
-    console.log("Token: ", token);
-    return (
-        <NativeBaseProvider>
-            <NavigationContainer >
-                {
-                    (!token || token === "") ? (
-                        <Stack.Navigator>
-                            <Stack.Screen options={{
-                                headerShown: false,
-                            }} name="Signin"
-                                component={Singin} />
-                            <Stack.Screen name="Signup" component={Signup} />
-                        </Stack.Navigator>
-                    ) : (
-                        <Tab.Navigator labeled={false} style={{ marginTop: Constants.statusBarHeight }}>
-                            <Tab.Screen options={{
-                                tabBarIcon: () => (
-                                    <AntDesign name="home" size={26} color="black" />
-                                )
-                            }} name="Home" component={Home} />
-                            <Tab.Screen options={{
-                                tabBarIcon: () => (
-                                    <AntDesign name="contacts" size={26} color="black" />
-                                )
-                            }} name="Contact" component={Contact} />
-                        </Tab.Navigator>
-                    )
-                }
-            </NavigationContainer >
-        </NativeBaseProvider>
+    const { token, loading } = useContext(defaultContext);
+    return(
+        <>
+            <NativeBaseProvider>
+                <NavigationContainer >
+                    {
+                        (!token || token === "") ? (
+                            <Stack.Navigator>
+                                <Stack.Screen options={{
+                                    headerShown: false,
+                                }} name="Signin"
+                                    component={Singin} />
+                                <Stack.Screen name="Signup" component={Signup} />
+                            </Stack.Navigator>
+                        ) : (
+                            <Tab.Navigator labeled={false} style={{ marginTop: Constants.statusBarHeight }}>
+                                <Tab.Screen options={{
+                                    tabBarIcon: () => (
+                                        <AntDesign name="home" size={26} color="black" />
+                                    )
+                                }} name="Home" component={Home} />
+                                <Tab.Screen options={{
+                                    tabBarIcon: () => (
+                                        <AntDesign name="contacts" size={26} color="black" />
+                                    )
+                                }} name="Contact" component={Contact} />
+                            </Tab.Navigator>
+                        )
+                    }
+                </NavigationContainer >
+            </NativeBaseProvider>
+        </>
     )
 }

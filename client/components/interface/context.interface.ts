@@ -20,5 +20,6 @@ export interface ContextData {
         username: string,
         password: string
     }) => void,
-
+    loading: boolean,
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>
 }

@@ -8,6 +8,8 @@ import { buyCoin, data, sellCoin } from "../interface/data.interface";
 const ContextStore = ({ children }: { children: ReactNode }) => {
   const [token, setToken] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   const [data, setData] = useState<data[]>([]);
   const [buy, setBuy] = useState<buyCoin>({ name: "", buy: 0, quantity: 0 });
   const [isBuy, setIsBuy] = useState(false);
@@ -24,6 +26,7 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
   }
 
   const getData = () => {
+    setLoading(true);
     axios({
       url: `${Constants.expoConfig?.extra?.apiUrl}/crypto/data`,
       method: 'get',
@@ -32,15 +35,18 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
       }
     })
       .then(function (response) {
+        setLoading(false);
         setData(response.data);
         handleProfileProfit(response.data);
       })
       .catch(function (error) {
+        setLoading(false);
         console.log("Error: ", error);
       })
   }
 
   const handleAdd = () => {
+    setLoading(true);
     if (buy.name === "" || buy.buy === 0 || buy.quantity === 0)
       return;
     axios({
@@ -54,11 +60,13 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
       setBuy({ name: "", buy: 0, quantity: 0 });
       getData();
     }).catch((err) => {
+      setLoading(false);
       console.log("error: ", err);
     })
   }
 
   const handleDelete = (id: string) => {
+    setLoading(true);
     axios({
       url: `${Constants.expoConfig?.extra?.apiUrl}/crypto/del/${id}`,
       method: 'delete',
@@ -68,12 +76,13 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
     }).then((res) => {
       getData();
     }).catch((err) => {
+      setLoading(false);
       console.log("error: ", err);
     })
   }
 
   const handleSell = (id: string) => {
-    console.log(sell);
+    setLoading(true);
     if (sell.sell === 0 || sell.quantity === 0)
       return;
     axios({
@@ -84,9 +93,9 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
       },
       data: sell
     }).then((res) => {
-      console.log("res: ", res);
       getData();
     }).catch((err) => {
+      setLoading(false);
       console.log("error: ", err);
     })
   }
@@ -95,14 +104,16 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
     username: string,
     password: string
   }) => {
-    console.log(data);
+    setLoading(true);
     axios({
       url: `${Constants.expoConfig?.extra?.apiUrl}/auth/login`,
       method: 'post',
       data
     }).then((res) => {
+      setLoading(false);
       setToken(res.data.access_token);
     }).catch((err) => {
+      setLoading(false);
       console.log("error: ", err);
     })
   }
@@ -125,9 +136,10 @@ const ContextStore = ({ children }: { children: ReactNode }) => {
       sell,
       setSell,
       profileProfit,
-      handleLogin
+      handleLogin,
+      loading,
+      setLoading
     }}>
-      {/* {console.log("new: ", token)} */}
       {children}
     </defaultContext.Provider>
   )

@@ -11,13 +11,14 @@ import {
 import { Image } from 'expo-image';
 import { Images } from "../assets";
 import defaultContext from "../context/context";
+import Preloader from "../Preloader";
 
 
 export default function Singin({ navigation, route }: {
   navigation: any
   route: any
 }) {
-  const { token, setToken } = useContext(defaultContext);
+  const { setLoading, loading } = useContext(defaultContext);
 
   const { handleLogin } = useContext(defaultContext);
 
@@ -27,11 +28,13 @@ export default function Singin({ navigation, route }: {
   }>({ username: "", password: "" });
 
   const handleChange = (key: string, e: string) => {
-    console.log(data);
+    // console.log(data);
     setData(oldState => ({ ...oldState, [key]: e }));
   }
 
-  return (
+  return loading ? (
+    <Preloader />
+  ) : (
     <View style={styles.container}>
       <Image style={styles.image}
         source={Images.logo}
@@ -44,6 +47,7 @@ export default function Singin({ navigation, route }: {
           placeholder="Username"
           placeholderTextColor="#003f5c"
           onChangeText={(e) => handleChange("username", e)}
+          value={data.username}
         />
       </View>
       <View style={styles.inputView}>
@@ -53,12 +57,16 @@ export default function Singin({ navigation, route }: {
           placeholderTextColor="#003f5c"
           secureTextEntry={true}
           onChangeText={(e) => handleChange("password", e)}
+          value={data.password}
         />
       </View>
       {/* <TouchableOpacity>
         <Text style={styles.forgot_button}>Forgot Password?</Text>
       </TouchableOpacity> */}
-      <TouchableOpacity style={styles.loginBtn} onPress={() => { handleLogin(data); setData({ username: "", password: "" }); }}>
+      <TouchableOpacity style={styles.loginBtn} onPress={() => {
+        handleLogin(data);
+        setData({ username: "", password: "" });
+      }}>
         <Text style={styles.loginText}>LOGIN</Text>
       </TouchableOpacity>
     </View>
