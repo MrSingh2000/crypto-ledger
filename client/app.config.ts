@@ -5,8 +5,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   slug: 'my-app',
   name: 'Crypto Ledger',
   extra: {
-    // apiUrl: 'https://cryptoledger.onrender.com',
-    apiUrl: process.env.API_URL || 'http://192.168.43.154:3000',
+    apiUrl: 'https://cryptoledger.onrender.com',
+    // apiUrl: process.env.API_URL || 'http://192.168.43.154:3000',
     eas: {
       projectId: "787b3cb3-c972-455a-bc30-87b6a740c08b"
     }

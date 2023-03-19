@@ -37,7 +37,7 @@ export class CryptoService {
             quantity: number,
             sdate: number
         }[] = [...doc.sell];
-        
+
         sellArr.push({
             price: data.sell,
             quantity: data.quantity,
@@ -45,7 +45,10 @@ export class CryptoService {
         });
 
         let profitArr: number[] = [...doc.profit];
-        profitArr.push((data.sell - doc.buy) * data.quantity);
+        const tax = ((data.quantity * data.sell) * 2) / 100;
+        let calculatedProfit: number = (data.sell - doc.buy) * data.quantity;
+        calculatedProfit -= tax;
+        profitArr.push(calculatedProfit);
 
         // calculating profit
         let newData: object = {
@@ -70,7 +73,7 @@ export class CryptoService {
     }
 
     async getData(): Promise<any> {
-        let data = await this.cryptoModel.find().sort({bdate: -1});
+        let data = await this.cryptoModel.find().sort({ bdate: -1 });
         return data;
     }
 
